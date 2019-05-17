@@ -2,7 +2,7 @@
 
 kreep tries to identify search queries in encrypted network traffic.
 
-* More details coming soon *
+*More details coming soon*
 
 ## Usage
 
