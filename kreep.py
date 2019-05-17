@@ -3,7 +3,7 @@ import sys
 import numpy as np
 import pandas as pd
 
-from util import load_pcap, load_words
+from util import load_pcap, load_words, load_language
 from detection import detect_keystrokes
 from tokenization import tokenize_words
 from compression import prune_dictionary
@@ -18,6 +18,8 @@ def main(fname):
     # Load the dictionary
     words = load_words('dictionary.txt')
 
+    lm = load_language('test.arpa')
+
     # TODO: detect website, for now, let the user specify google/baidu
 
     # Detect keystrokes
@@ -29,19 +31,14 @@ def main(fname):
     # Prune the dictionary from compression info leakage
     pruned_words = prune_dictionary(keystrokes, words)
 
-    print('Detected a query with token lengths:', end='')
-    for p in pruned_words:
-        print(' ', len(p[0]), end='')
-    print()
-
     # TODO: timing and language model coming soon
     # Word probabilities from keystroke timing
-    # word_probas = keystroke_timing(keystrokes, pruned_words)
+    word_probas = keystroke_timing(keystrokes, pruned_words)
 
     # Generate query hypotheses with a language model
-    # phrases = predict_phrases(pruned_words, word_probas)
+    phrases = predict_phrases(word_probas, lm)
 
-    # print(phrases)
+    print('\n'.join(phrases))
 
 
 if __name__ == '__main__':

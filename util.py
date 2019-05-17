@@ -58,3 +58,19 @@ def load_words(fname):
         words_dict[word_len] = words[s==word_len].values
 
     return words_dict
+
+
+def load_language(fname):
+    import kenlm
+    lm = kenlm.Model(fname)
+
+    def lm_fun(s, lm=lm):
+        marg = lm.score(' '.join(s), bos=False, eos=False)
+
+        if len(s) > 1:
+            prev = lm.score(' '.join(s[:-1]), bos=False, eos=False)
+            return marg - prev
+        else:
+            return marg
+
+    return lm_fun
