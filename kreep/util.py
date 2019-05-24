@@ -3,6 +3,10 @@ import socket
 import string
 import numpy as np
 import pandas as pd
+import pkg_resources
+
+DATA_PATH = pkg_resources.resource_filename('kreep', 'data/')
+LANGUAGE_MODELS = pkg_resources.resource_filename('kreep', 'data/language_models')
 
 KEY_SET = list(string.ascii_lowercase)
 INT2KEY = dict(enumerate(sorted(KEY_SET)))
@@ -74,3 +78,9 @@ def load_language(fname):
             return marg
 
     return lm_fun
+
+
+def load_bigrams(fname):
+    df = pd.read_csv(fname, index_col=[0,1])
+
+    return df

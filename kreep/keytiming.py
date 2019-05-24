@@ -5,40 +5,38 @@ from scipy import stats
 
 KEYS = list(string.ascii_lowercase) + [' ']
 
-BIGRAMS = pd.read_csv('bigrams.csv', index_col=[0,1])
-
-def word_proba(x, word):
+def word_proba(bigrams, x, word):
     lp = 0
     for i in range(len(word)-1):
         key1 = word[i]
         key2 = word[i+1]
 
-        if (key1,key2) not in BIGRAMS.index:
+        if (key1,key2) not in bigrams.index:
             obs = []
 
-            if key1 in BIGRAMS.index.levels[0]:
-                obs.append(BIGRAMS.xs(key1, level=0))
+            if key1 in bigrams.index.levels[0]:
+                obs.append(bigrams.xs(key1, level=0))
 
-            if key2 in BIGRAMS.index.levels[1]:
-                obs.append(BIGRAMS.xs(key2, level=1))
+            if key2 in bigrams.index.levels[1]:
+                obs.append(bigrams.xs(key2, level=1))
 
             if not len(obs):
-                obs = [BIGRAMS]
+                obs = [bigrams]
 
             obs = pd.concat(obs, ignore_index=True)
 
             mean = obs['mean'].mean()
             std = obs['std'].mean()
         else:
-            mean = BIGRAMS.loc[(key1,key2), 'mean']
-            std = BIGRAMS.loc[(key1,key2), 'std']
+            mean = bigrams.loc[(key1,key2), 'mean']
+            std = bigrams.loc[(key1,key2), 'std']
 
         p = stats.norm.pdf(x[i], loc=mean, scale=std)
         lp += np.log(p)
 
     return lp
 
-def keystroke_timing(keystrokes, words):
+def keystroke_timing(bigrams, keystrokes, words):
     word_probas = []
     keystrokes['latency'] = keystrokes['frame_time'].diff()*1000
     _, latency = zip(*keystrokes.groupby('token')['latency'])
@@ -50,7 +48,7 @@ def keystroke_timing(keystrokes, words):
     latency[-1] = latency[-1].values[1:]
 
     for x, words_i in zip(latency, words):
-        df = pd.Series([word_proba(x, w) for w in words_i], index=words_i)
+        df = pd.Series([word_proba(bigrams, x, w) for w in words_i], index=words_i)
         word_probas.append(df)
 
     return word_probas
