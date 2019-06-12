@@ -11,19 +11,19 @@ from .keytiming import keystroke_timing
 from .language import predict_phrases
 
 
-def kreep(fname, dictionary_fname, language_fname, bigrams_fname):
+def kreep(pcap, words, language, bigrams):
     # Load the pcap
-    df = load_pcap(fname)
+    pcap = load_pcap(pcap)
 
-    # Load the dictionary
-    words = load_words(dictionary_fname)
-    lm = load_language(language_fname)
-    bigrams = load_bigrams(bigrams_fname)
+    # Load the dictionary, language, and timing models
+    words = load_words(words)
+    language = load_language(language)
+    bigrams = load_bigrams(bigrams)
 
     # TODO: detect website, for now, let the user specify google/baidu
 
     # Detect keystrokes
-    keystrokes = detect_keystrokes(df, 'google')
+    keystrokes = detect_keystrokes(pcap, 'google')
 
     # Detect space keys to create word tokens
     keystrokes['token'] = tokenize_words(keystrokes, 'google', max(words.keys()))
@@ -31,17 +31,10 @@ def kreep(fname, dictionary_fname, language_fname, bigrams_fname):
     # Prune the dictionary from compression info leakage
     pruned_words = prune_dictionary(keystrokes, words)
 
-    # TODO: timing and language model coming soon
     # Word probabilities from keystroke timing
     word_probas = keystroke_timing(bigrams, keystrokes, pruned_words)
 
     # Generate query hypotheses with a language model
-    phrases = predict_phrases(word_probas, lm)
+    phrases = predict_phrases(word_probas, language)
 
     return phrases
-
-
-if __name__ == '__main__':
-    fname = sys.argv[1]
-
-    main(fname)
