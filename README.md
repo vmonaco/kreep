@@ -4,11 +4,12 @@ kreep identifies search queries in encrypted network traffic.
 
 See these papers for more details:
 
-    [What Are You Searching For?: A Remote Keylogging Attack on Search Engine Autocomplete](#) (USENIX'19)
-    [Feasibility of a Keystroke Timing Attack on Search Engines with Autocomplete](#) (IEEE S&P'19 Workshops)
+[What Are You Searching For?: A Remote Keylogging Attack on Search Engine Autocomplete](#) (USENIX'19)
+[Feasibility of a Keystroke Timing Attack on Search Engines with Autocomplete](#) (IEEE S&P'19 Workshops)
 
 For background on keylogging side channels, see:
-    [Sok: Keylogging side channels](#) (IEEE S&P'18)
+
+[Sok: Keylogging side channels](#) (IEEE S&P'18)
 
 ### How does it work?
 
@@ -51,13 +52,22 @@ Full usage
 
 ## Example
 
-    $ kreep examples/example.pcap
-
+    $ kreep examples/google.pcap --k=10
+    you know the
+    the very top
+    the work the
+    you know all
+    the very the
+    the work has
+    can work out
+    was very the
+    the very ill
+    can work for
 
 ## Limitations
 
-    * Currently supported search engines are Google and Baidu
-    * Queries must contain only lowercase alphabetic characters and the space key
-    * Query words must appear in the language model
-    * Victim cannot copy/paste a query, press Delete or Arrow keys, or move the caret in any other way
-    * Works only up to the point the victim selects a query from the autocomplete suggestions
+* Currently supported search engines are Google and Baidu
+* Queries must contain only lowercase alphabetic characters and the space key
+* Query words must appear in the language model
+* Victim cannot copy/paste a query, press Delete or Arrow keys, or move the caret in any other way
+* Works only up to the point the victim selects a query from the autocomplete suggestions
