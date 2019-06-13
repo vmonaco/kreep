@@ -9,13 +9,12 @@ kreep identifies search queries in encrypted network traffic using information l
 
 See these papers for more details:
 
-[What Are You Searching For?: A Remote Keylogging Attack on Search Engine Autocomplete](#) (USENIX'19)
+* [What Are You Searching For?: A Remote Keylogging Attack on Search Engine Autocomplete](#) (USENIX'19)
+* [Feasibility of a Keystroke Timing Attack on Search Engines with Autocomplete](#) (IEEE S&P'19 Workshops)
 
-[Feasibility of a Keystroke Timing Attack on Search Engines with Autocomplete](#) (IEEE S&P'19 Workshops)
+For background on keylogging side channels, see:
 
-For more background on keylogging side channels, see:
-
-[Sok: Keylogging side channels](#) (IEEE S&P'18)
+* [Sok: Keylogging side channels](#) (IEEE S&P'18)
 
 
 ## Setup
