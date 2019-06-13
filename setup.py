@@ -7,7 +7,7 @@ setup(
     url='http://github.com/vmonaco/kreep',
     author='Vinnie Monaco',
     author_email='contact@vmonaco.com',
-    license='BSD-3-Clause',
+    license='GPL',
     packages=['kreep'],
     package_dir={'kreep': 'kreep'},
     package_data={'kreep': ['kreep/data']},
@@ -17,9 +17,7 @@ setup(
     install_requires=[
         'pandas',
         'dpkt',
-        'scipy',
-        # 'kenlm==0.0.0',
-        'kenlm @ https://github.com/kpu/kenlm/archive/master.zip#egg=kenlm-0.0.0'
+        'scipy'
     ],
     include_package_data=True,
     zip_safe=False

@@ -1,9 +1,20 @@
+#---------------------------------------------------------------
+# kreep - keystroke recognition and entropy elimination program
+#   by Vinnie Monaco
+#   www.vmonaco.com
+#   contact AT vmonaco DOT com
+#
+#   Licensed under GPLv3
+#
+#----------------------------------------------------------------
+
 import string
 import numpy as np
 import pandas as pd
 from scipy import stats
 
 KEYS = list(string.ascii_lowercase) + [' ']
+
 
 def word_proba(bigrams, x, word):
     lp = 0
@@ -32,13 +43,14 @@ def word_proba(bigrams, x, word):
             std = bigrams.loc[(key1,key2), 'std']
 
         p = stats.norm.pdf(x[i], loc=mean, scale=std)
-        lp += np.log(p)
+        lp += np.log10(p)
 
     return lp
 
+
 def keystroke_timing(bigrams, keystrokes, words):
     word_probas = []
-    keystrokes['latency'] = keystrokes['frame_time'].diff()*1000
+    keystrokes['latency'] = keystrokes['frame_time'].diff()
     _, latency = zip(*keystrokes.groupby('token')['latency'])
 
     latency = list(latency)
@@ -52,6 +64,7 @@ def keystroke_timing(bigrams, keystrokes, words):
         word_probas.append(df)
 
     return word_probas
+
 
 def train_model(fname_in, fname_out, time_col='press_time', key_col='key_name', groupby=['user','session']):
     df = pd.read_csv(fname_in)

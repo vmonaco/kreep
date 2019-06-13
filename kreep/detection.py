@@ -1,6 +1,15 @@
+#---------------------------------------------------------------
+# kreep - keystroke recognition and entropy elimination program
+#   by Vinnie Monaco
+#   www.vmonaco.com
+#   contact AT vmonaco DOT com
+#
+#   Licensed under GPLv3
+#
+#----------------------------------------------------------------
+
 import numpy as np
 import pandas as pd
-from scipy import stats
 from itertools import product
 
 
@@ -47,25 +56,10 @@ def baidu_rule(a, e, ta, te):
     return False
 
 
-def yandex_rule(a, e, ta, te):
-    d = e - a[-1]
-
-    if len(a) <= 2 and te - ta > 2000:
-        return False
-
-    if d == 1:
-        return True
-
-    if d == 2:
-        return True
-
-    if d == 3:
-        return True
-
-    if d == 4:
-        return True
-
-    return False
+DETECTION_RULES = {
+    'google': google_rule,
+    'baidu': baidu_rule
+}
 
 
 def longest_dfa_sequence(a, t, append_rule):
@@ -100,11 +94,6 @@ def longest_dfa_sequence(a, t, append_rule):
 
 
 def detect_keystrokes(df, website):
-    append_rules = {
-        'google':google_rule,
-        'baidu':baidu_rule,
-        'yandex':yandex_rule
-    }
 
     # At least the min size of a GET request
     df = df[df['frame_length']>100]
@@ -113,9 +102,26 @@ def detect_keystrokes(df, website):
     for dst, protocol in df[['dst','protocol']].drop_duplicates().values:
         df_dst = df[(df['dst']==dst)&(df['protocol']==protocol)]
         idx = longest_dfa_sequence(df_dst['frame_length'].values.tolist(), df_dst['frame_time'].values.tolist(),
-                                append_rule=append_rules[website])
+                                append_rule=DETECTION_RULES[website])
 
         if len(idx) > len(result):
             result = df_dst.iloc[idx]
 
     return result
+
+
+def detect_website_keystrokes(df):
+    '''
+    Try to detect keystrokes using each rule, keep the longest
+    '''
+    website_out = ''
+    keystrokes_out = []
+
+    for website, rule in DETECTION_RULES.items():
+        keystrokes = detect_keystrokes(df, website)
+
+        if len(keystrokes) > len(keystrokes_out):
+            keystrokes_out = keystrokes
+            website_out = website
+
+    return website_out, keystrokes_out

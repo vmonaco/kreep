@@ -1,3 +1,13 @@
+#---------------------------------------------------------------
+# kreep - keystroke recognition and entropy elimination program
+#   by Vinnie Monaco
+#   www.vmonaco.com
+#   contact AT vmonaco DOT com
+#
+#   Licensed under GPLv3
+#
+#----------------------------------------------------------------
+
 import numpy as np
 import pandas as pd
 
