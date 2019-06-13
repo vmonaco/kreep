@@ -1,26 +1,26 @@
 ## kreep: Keystroke Recognition and Entropy Elimination Program
 
-kreep identifies search queries in encrypted network traffic.
+kreep identifies search queries in encrypted network traffic using information leaked through autocomplete suggestions. There are several sources of information leakage in client outbound traffic. These include:
+
+1. Autocomplete packet sizes are monotonically increasing compared to background traffic. Each packet contains only a single new character appended to the query.
+2. Percent-encoded URL characters occupy 3 bytes, characters occupy 1 byte.
+3. HTTP2 header compression leaks some information about each character in the query.
+4. Packet timings reveal keydown events in the browser.
 
 See these papers for more details:
 
 [What Are You Searching For?: A Remote Keylogging Attack on Search Engine Autocomplete](#) (USENIX'19)
+
 [Feasibility of a Keystroke Timing Attack on Search Engines with Autocomplete](#) (IEEE S&P'19 Workshops)
 
-For background on keylogging side channels, see:
+For more background on keylogging side channels, see:
 
 [Sok: Keylogging side channels](#) (IEEE S&P'18)
 
-### How does it work?
-
-kreep uses several sources of information leakage in client outbound traffic to identify the query. These include:
-
-    1. Autocomplete packets are linearly increasing compared to background traffic.
-    2. Percent-encoded URL characters occupy 3 bytes, characters occupy 1 byte.
-    3. HTTP2 header compression leaks some information about each character in the query.
-    4. Packet timings reveal keydown events in the browser.
 
 ## Setup
+
+The kreep python package provides a command `kreep`.
 
     $ pip install https://github.com/vmonaco/kreep/archive/master.zip
 
