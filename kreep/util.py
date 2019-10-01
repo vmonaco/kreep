@@ -23,11 +23,16 @@ INT2KEY = dict(enumerate(sorted(KEY_SET)))
 KEY2INT = {v:k for k, v in INT2KEY.items()}
 
 
-def ip_to_str(address):
+def ip_to_str(ipv6, address):
     '''
     transform a int ip address to a human readable ip address (ipv4)
     '''
-    return socket.inet_ntoa(address)
+    ip_fam = socket.AF_INET
+
+    if ipv6:
+        ip_fam = socket.AF_INET6
+
+    return socket.inet_ntop(ip_fam, address)
 
 
 def load_pcap(fname):
@@ -40,11 +45,11 @@ def load_pcap(fname):
         rows = []
         for ts, buf in dpkt.pcapng.Reader(open(fname,'rb')):
             eth = dpkt.ethernet.Ethernet(buf)
-            if eth.type == dpkt.ethernet.ETH_TYPE_IP:
+            if eth.type == dpkt.ethernet.ETH_TYPE_IP or eth.type == dpkt.ethernet.ETH_TYPE_IP6:
                 ip = eth.data
                 if ip.p == dpkt.ip.IP_PROTO_TCP:
                     tcp = ip.data
-                    rows.append((ip_to_str(ip.src), ip_to_str(ip.dst), ts*1000, len(tcp.data), ip.p))
+                    rows.append((ip_to_str(eth.type == dpkt.ethernet.ETH_TYPE_IP6, ip.src), ip_to_str(eth.type == dpkt.ethernet.ETH_TYPE_IP6, ip.dst), ts*1000, len(tcp.data), ip.p))
 
         df = pd.DataFrame(rows, columns=['src','dst','frame_time','frame_length','protocol'])
     return df
