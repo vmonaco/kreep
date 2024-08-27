@@ -22,7 +22,7 @@ def predict_phrases(word_probs, lm, k, alpha):
 
         new_beam = []
         for l,l_score in beam:
-            for token, km_prob in word_probs_i.iteritems():
+            for token, km_prob in word_probs_i.items():
                 lm_prob = lm(token, history=l)
                 score = l_score + km_prob + lm_prob * alpha
                 new_beam.append((l + (token,), score))
